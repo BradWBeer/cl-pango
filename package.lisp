@@ -1,8 +1,15 @@
 (in-package :cl-user)
 
-(cl:defpackage #:pango
+(cl:defpackage #:cl-pango
+  (:nicknames :pango)
   (:use #:cl)
   (:export
+
+   #:WITH-CONTEXT-FROM-SURFACE
+   #:CLEAR-CAIRO-CONTEXT
+   #:PRINT-TEXT
+   #:WITH-PARAGRAPH
+
    #:G_OBJECT_UNREF
    #:PANGOCONTEXT
    #:PANGOITEM

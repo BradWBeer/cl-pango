@@ -1,4 +1,4 @@
-(in-package #:pango)
+(in-package #:cl-pango)
 
 (cffi:defcfun ("g_object_unref" g_object_unref) :void
   (object :pointer))
@@ -1944,3 +1944,53 @@
     (pango_font_family_list_faces font-family l c)
     (loop for i from 0 to (1- (cffi:mem-aref c :int))
        collect (cffi:mem-aref (cffi:mem-aref l :pointer) :pointer i))))
+
+(defvar *layout* '*layout*)
+
+(defmacro with-context-from-surface ((surface) &body body)
+  (let ((context (gensym "context")))
+    `(let ((,context (cairo:create-context ,surface)))
+       (unwind-protect
+	    (cairo:with-context (,context)
+	      ,@body)	      
+	 (cairo:destroy ,context)))))
+
+(defun clear-cairo-context (&optional (r 1) (g 1) (b 1) (a 1) (context cairo:*context*))
+  (cairo:save context)
+  (cairo:set-source-rgba r g b a context)
+  (cairo:set-operator :source context)
+  (cairo:paint context)
+  (cairo:restore context))
+
+
+(defmacro print-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_CENTER))
+  "Print a block of text."
+  `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
+     (cairo:save)
+     (pango_layout_set_markup ,*layout* (xmls:toxml
+					 ,text) -1)
+     
+     (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
+     (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
+     (cairo:restore)
+     (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
+
+
+(defmacro with-paragraph ((&key (layout *layout*)  (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
+  "Create a paragraph of text"
+  (let ((gwidth (gensym))
+	(gwrap (gensym)))
+
+    `(let ((,layout (pango_cairo_create_layout
+		     (slot-value ,context 'cairo::pointer)))
+	   (,gwidth (* pango_scale ,width))
+	   (,gwrap ,wrap))
+       
+       (when (and ,gwidth ,gwrap)
+	 (pango_layout_set_wrap ,layout ,gwrap)
+	 (pango_layout_set_width ,layout ,gwidth))
+       
+       (pango_layout_set_alignment ,layout ,alignment)
+       (unwind-protect 
+	    (progn ,@body)
+	 (g_object_unref ,layout)))))
