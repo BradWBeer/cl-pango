@@ -1800,6 +1800,27 @@
   (height :double))
 
 
+(defmacro with-pango-object ((var object) &body body)
+    `(let ((,var ,object))
+       (unwind-protect
+	    (progn ,@body)
+	 (pango:g_object_unref ,var))))
+
+
+(defmacro with-pango-objects  ((&rest objects) &body body)
+  (print objects)
+  (if (car objects)
+      `(with-pango-object ,(car objects)
+	 (with-pango-objects ,(cdr objects) ,@body))
+      `(progn ,@body)))
+
+(defmacro with-attribute-list ((&optional (var '*attribute-list*)) &body body)
+    `(let ((,var (pango:pango_attr_list_new)))
+      (unwind-protect
+	   (progn ,@body)
+	(pango:pango_attr_list_unref ,var))))
+
+
 (defmacro add-pango-attribute (attr-list attr &optional start end)
   (let ((attrs (gensym))
 	(a (gensym))
@@ -1839,8 +1860,10 @@
   (cffi:with-foreign-objects ((ink :pointer)
 			      (logical :pointer))
     (pango_layout_line_get_extents line ink logical)      
-    (values (/ (cffi:foreign-slot-value ink 'PangoRectangle 'x) PANGO_SCALE)
-	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'y) PANGO_SCALE))))
+    (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE))))
 
 (defun get-layout-lines-data (layout)
   (let* ((i 0)
@@ -1855,7 +1878,7 @@
 				 
 		 do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))
 		 do (incf i))))
-    (list i ret)))
+    ret)))
 
 (defun move-cursor-visually (layout pos &key (forward t) (strong t) (trailing nil))
   (let ((direction (if forward 1 -1))
@@ -1904,6 +1927,15 @@
     (values (cffi:mem-aref index :int)
 	    (cffi:mem-aref trailing :int))))
 
+(defun get-glyph-position (layout index)
+	   (cffi:with-foreign-objects ((rect :pointer))
+	     (pango_layout_index_to_pos layout index rect)
+	     (unless (cffi-sys:null-pointer-p rect)
+	       (list (/ (cffi:foreign-slot-value rect 'PangoRectangle 'x) PANGO_SCALE)
+		     (/ (cffi:foreign-slot-value rect 'PangoRectangle 'y) PANGO_SCALE)
+		     (/ (cffi:foreign-slot-value rect 'PangoRectangle 'width) PANGO_SCALE)
+		     (/ (cffi:foreign-slot-value rect 'PangoRectangle 'height) PANGO_SCALE)))))
+
 (defun get-cursor-pos (layout index)
 	   (cffi:with-foreign-objects ((strong :pointer)
 				       (weak :pointer))
@@ -1947,7 +1979,7 @@
 
 (defvar *layout* '*layout*)
 
-(defmacro with-context-from-surface ((surface) &body body)
+(defmacro with--from-surface ((surface) &body body)
   (let ((context (gensym "context")))
     `(let ((,context (cairo:create-context ,surface)))
        (unwind-protect
@@ -1962,11 +1994,23 @@
   (cairo:paint context)
   (cairo:restore context))
 
+(defmacro print-raw-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_CENTER))
+  "Print a block of text."
+  `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
+     (cairo:save)
+
+     (pango_layout_set_text ,*layout* ,text -1)
+     
+     (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
+     (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
+     (cairo:restore)
+     (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 (defmacro print-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_CENTER))
   "Print a block of text."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
+
      (pango_layout_set_markup ,*layout* (xmls:toxml
 					 ,text) -1)
      
