@@ -1,5 +1,8 @@
 (in-package #:cl-pango)
 
+(defvar *attribute-list*)
+(defvar *layout*)
+
 (cffi:defcfun ("g_object_unref" g_object_unref) :void
   (object :pointer))
 
@@ -1806,6 +1809,12 @@
 	    (progn ,@body)
 	 (pango:g_object_unref ,var))))
 
+(defmacro with-layout ((&optional (var 'pango::*layout*) context) &body body)
+  `(with-pango-object (,(or var 'pango::*layout*)
+			(pango:pango_cairo_create_layout (slot-value ,(or context
+									  'cairo:*context*) 'cairo::pointer)))
+     ,@body))
+
 
 (defmacro with-pango-objects  ((&rest objects) &body body)
   (print objects)
@@ -1814,10 +1823,12 @@
 	 (with-pango-objects ,(cdr objects) ,@body))
       `(progn ,@body)))
 
-(defmacro with-attribute-list ((&optional (var '*attribute-list*)) &body body)
+(defmacro with-attribute-list ((&optional (var '*attribute-list*) (layout '*layout*)) &body body)
     `(let ((,var (pango:pango_attr_list_new)))
       (unwind-protect
-	   (progn ,@body)
+	   (prog1 
+	     ,@body
+	     (pango:pango_layout_set_attributes ,layout ,var))
 	(pango:pango_attr_list_unref ,var))))
 
 
@@ -1878,7 +1889,7 @@
 				 
 		 do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))
 		 do (incf i))))
-    ret)))
+    ret))
 
 (defun move-cursor-visually (layout pos &key (forward t) (strong t) (trailing nil))
   (let ((direction (if forward 1 -1))
@@ -2020,14 +2031,14 @@
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
-(defmacro with-paragraph ((&key (layout *layout*)  (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
+(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) (width (cairo:width  cairo::*context*)) (wrap :pango_wrap_word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
 	(gwrap (gensym)))
 
     `(let ((,layout (pango_cairo_create_layout
 		     (slot-value ,context 'cairo::pointer)))
-	   (,gwidth (* pango_scale ,width))
+	   (,gwidth (* pango_scale ,width))			  
 	   (,gwrap ,wrap))
        
        (when (and ,gwidth ,gwrap)
@@ -2035,6 +2046,139 @@
 	 (pango_layout_set_width ,layout ,gwidth))
        
        (pango_layout_set_alignment ,layout ,alignment)
-       (unwind-protect 
-	    (progn ,@body)
-	 (g_object_unref ,layout)))))
+	 (unwind-protect
+	      (progn ,@body)
+	   (g_object_unref ,layout)))))
+
+(defmacro print-with-attributes ((text &key context (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
+    `(with-layout ()
+       (with-paragraph (:alignment ,alignment
+				   :width ,(or width
+					       `(cairo:width cairo::*context*)) :wrap ,wrap)
+	 (cairo:save)
+	 (pango:pango_layout_set_text *layout* ,text -1)
+	 (with-attribute-list ()
+	   ,@body)
+	 
+	 (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+	 (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+	 (cairo:restore)
+	 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))
+     )
+  
+
+(defun set-attribute-start-end (attr &optional start end)
+  (setf (cffi:foreign-slot-value attr 'pango::pangoattribute 'pango::start_index)
+	(or start PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING))
+  (setf (cffi:foreign-slot-value attr 'pango::pangoattribute 'pango::end_index)
+	(or end PANGO_ATTR_INDEX_TO_TEXT_END))
+  attr)
+
+(defun add-foreground-color-attribute (red blue green &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_foreground_new
+	       (round (* red 65535))
+	       (round (* blue 65535))
+	       (round (* green 65535)))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-background-color-attribute (red blue green &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_background_new
+	       (round (* red 65535))
+	       (round (* blue 65535))
+	       (round (* green 65535)))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-size-attribute (size &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_size_new (* pango:pango_scale size))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-absolute-size-attribute (size &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_size_new_absolute (* pango:pango_scale size))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-weight-attribute (weight &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_weight_new (* pango:pango_scale weight))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-family-attribute (family &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_family_new family)))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-style-attribute (style &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_style_new style)))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+	       
+(defun add-variant-attribute (variant &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_variant_new variant)))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-stretch-attribute (stretch &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_stretch_new stretch)))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-stretch-attribute (stretch &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_stretch_new stretch)))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-strikethrough-attribute (bool &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_strikethrough_new (if bool -1 0))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-strikethrough-color-attribute (red blue green &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_strikethrough_color_new
+	       (round (* red 65535))
+	       (round (* blue 65535))
+	       (round (* green 65535)))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-underline-attribute (bool &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango_attr_underline_new (if bool -1 0))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-underline-color-attribute (red blue green &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_underline_color_new
+	       (round (* red 65535))
+	       (round (* blue 65535))
+	       (round (* green 65535)))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defun add-rise-attribute (rise &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_rise_new (* pango:pango_scale rise))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
+
+
+(defun add-letter-spacing-attribute (spacing &key start end (attribute-list *attribute-list*))
+  (let ((attr (pango:pango_attr_letter_spacing_new (* pango:pango_scale spacing))))
+    (if (or start end)
+	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
+	(pango:pango_attr_list_insert attribute-list attr))))
