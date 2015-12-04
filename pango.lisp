@@ -1876,6 +1876,15 @@
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE))))
 
+(defun get-layout-extents (layout)
+  (cffi:with-foreign-objects ((ink :pointer)
+			      (logical :pointer))
+    (pango_layout_get_extents layout ink logical)      
+    (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE))))
+
 (defun get-layout-lines-data (layout)
   (let* ((i 0)
 	 (ret (loop with itr = (pango_layout_get_lines layout)
