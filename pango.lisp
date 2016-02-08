@@ -9,7 +9,7 @@
 ;;;SWIG wrapper code starts here
 
 (cl:defmacro defanonenum (&body enums)
-   "Converts anonymous enums to defconstants."
+  "Converts anonymous enums to defconstants."
   `(cl:progn ,@(cl:loop for value in enums
                         for index = 0 then (cl:1+ index)
                         when (cl:listp value) do (cl:setf index (cl:second value)
@@ -55,38 +55,38 @@
 
 
 (cffi:defcvar ("PangoContext" PangoContext)
- :pointer)
+    :pointer)
 
 (cffi:defcvar ("PangoItem" PangoItem)
- :pointer)
+    :pointer)
 
 (cffi:defcvar ("PangoAnalysis" PangoAnalysis)
- :pointer)
+    :pointer)
 
 (cffi:defcstruct GSList
-	(data :pointer)
-	(next :pointer))	
+  (data :pointer)
+  (next :pointer))	
 
 (cffi:defcstruct GList
-	(data :pointer)
-	(next :pointer)
-	(prev :pointer))
+  (data :pointer)
+  (next :pointer)
+  (prev :pointer))
 
 
 (cffi:defcstruct PangoLogAttr
-	(is_line_break :pointer)
-	(is_mandatory_break :pointer)
-	(is_char_break :pointer)
-	(is_white :pointer)
-	(is_cursor_position :pointer)
-	(is_word_start :pointer)
-	(is_word_end :pointer)
-	(is_sentence_boundary :pointer)
-	(is_sentence_start :pointer)
-	(is_sentence_end :pointer)
-	(backspace_deletes_character :pointer)
-	(is_expandable_space :pointer)
-	(is_word_boundary :pointer))
+  (is_line_break :pointer)
+  (is_mandatory_break :pointer)
+  (is_char_break :pointer)
+  (is_white :pointer)
+  (is_cursor_position :pointer)
+  (is_word_start :pointer)
+  (is_word_end :pointer)
+  (is_sentence_boundary :pointer)
+  (is_sentence_start :pointer)
+  (is_sentence_end :pointer)
+  (backspace_deletes_character :pointer)
+  (is_expandable_space :pointer)
+  (is_word_boundary :pointer))
 
 (cffi:defcstruct PangoLayoutLine
   (layout :pointer)
@@ -245,22 +245,22 @@
   (d :double))
 
 (cffi:defcstruct PangoRectangle
-	(x :int)
-	(y :int)
-	(width :int)
-	(height :int))
+  (x :int)
+  (y :int)
+  (width :int)
+  (height :int))
 
 (cffi:defcfun ("pango_extents_to_pixels" pango_extents_to_pixels) :void
   (inclusive :pointer)
   (nearest :pointer))
 
 (cffi:defcstruct PangoMatrix
-	(xx :double)
-	(xy :double)
-	(yx :double)
-	(yy :double)
-	(x0 :double)
-	(y0 :double))
+  (xx :double)
+  (xy :double)
+  (yx :double)
+  (yy :double)
+  (x0 :double)
+  (y0 :double))
 
 (cffi:defcfun ("pango_matrix_copy" pango_matrix_copy) :pointer
   (matrix :pointer))
@@ -308,38 +308,38 @@
   (matrix :pointer))
 
 (cffi:defcvar ("PangoGlyph" PangoGlyph)
- :unsigned-int)
+    :unsigned-int)
 
 (cffi:defcstruct PangoGlyphInfo
-	(glyph :pointer)
-	(geometry :pointer)
-	(attr :pointer))
+  (glyph :pointer)
+  (geometry :pointer)
+  (attr :pointer))
 
 (cffi:defcstruct PangoGlyphGeometry
-	(width :pointer)
-	(x_offset :pointer)
-	(y_offset :pointer))
+  (width :pointer)
+  (x_offset :pointer)
+  (y_offset :pointer))
 
 (cffi:defcvar ("PangoGlyphUnit" PangoGlyphUnit)
- :int)
+    :int)
 
 (cffi:defcstruct PangoGlyphVisAttr
-	(is_cluster_start :pointer))
+  (is_cluster_start :pointer))
 
 (cffi:defcstruct PangoGlyphString
-	(num_glyphs :int)
-	(glyphs :pointer)
-	(log_clusters :pointer))
+  (num_glyphs :int)
+  (glyphs :pointer)
+  (log_clusters :pointer))
 
 (cffi:defcstruct PangoGlyphItemIter
-	(glyph_item :pointer)
-	(text :pointer)
-	(start_glyph :int)
-	(start_index :int)
-	(start_char :int)
-	(end_glyph :int)
-	(end_index :int)
-	(end_char :int))
+  (glyph_item :pointer)
+  (text :pointer)
+  (start_glyph :int)
+  (start_index :int)
+  (start_char :int)
+  (end_glyph :int)
+  (end_index :int)
+  (end_char :int))
 
 (cffi:defcfun ("pango_glyph_string_new" pango_glyph_string_new) :pointer)
 
@@ -445,74 +445,74 @@
   (iter :pointer))
 
 (cffi:defcvar ("PangoFontDescription" PangoFontDescription)
- :pointer)
+    :pointer)
 
 (cffi:defcenum PangoStyle
-	:PANGO_STYLE_NORMAL
-	:PANGO_STYLE_OBLIQUE
-	:PANGO_STYLE_ITALIC)
+  :PANGO_STYLE_NORMAL
+  :PANGO_STYLE_OBLIQUE
+  :PANGO_STYLE_ITALIC)
 
 (cffi:defcenum PangoWeight
-	(:PANGO_WEIGHT_THIN 100)
-	(:PANGO_WEIGHT_ULTRALIGHT 200)
-	(:PANGO_WEIGHT_LIGHT 300)
-	(:PANGO_WEIGHT_BOOK 380)
-	(:PANGO_WEIGHT_NORMAL 400)
-	(:PANGO_WEIGHT_MEDIUM 500)
-	(:PANGO_WEIGHT_SEMIBOLD 600)
-	(:PANGO_WEIGHT_BOLD 700)
-	(:PANGO_WEIGHT_ULTRABOLD 800)
-	(:PANGO_WEIGHT_HEAVY 900)
-	(:PANGO_WEIGHT_ULTRAHEAVY 1000))
+  (:PANGO_WEIGHT_THIN 100)
+  (:PANGO_WEIGHT_ULTRALIGHT 200)
+  (:PANGO_WEIGHT_LIGHT 300)
+  (:PANGO_WEIGHT_BOOK 380)
+  (:PANGO_WEIGHT_NORMAL 400)
+  (:PANGO_WEIGHT_MEDIUM 500)
+  (:PANGO_WEIGHT_SEMIBOLD 600)
+  (:PANGO_WEIGHT_BOLD 700)
+  (:PANGO_WEIGHT_ULTRABOLD 800)
+  (:PANGO_WEIGHT_HEAVY 900)
+  (:PANGO_WEIGHT_ULTRAHEAVY 1000))
 
 (cffi:defcenum PangoVariant
-	:PANGO_VARIANT_NORMAL
-	:PANGO_VARIANT_SMALL_CAPS)
+  :PANGO_VARIANT_NORMAL
+  :PANGO_VARIANT_SMALL_CAPS)
 
 (cffi:defcenum PangoStretch
-	:PANGO_STRETCH_ULTRA_CONDENSED
-	:PANGO_STRETCH_EXTRA_CONDENSED
-	:PANGO_STRETCH_CONDENSED
-	:PANGO_STRETCH_SEMI_CONDENSED
-	:PANGO_STRETCH_NORMAL
-	:PANGO_STRETCH_SEMI_EXPANDED
-	:PANGO_STRETCH_EXPANDED
-	:PANGO_STRETCH_EXTRA_EXPANDED
-	:PANGO_STRETCH_ULTRA_EXPANDED)
+  :PANGO_STRETCH_ULTRA_CONDENSED
+  :PANGO_STRETCH_EXTRA_CONDENSED
+  :PANGO_STRETCH_CONDENSED
+  :PANGO_STRETCH_SEMI_CONDENSED
+  :PANGO_STRETCH_NORMAL
+  :PANGO_STRETCH_SEMI_EXPANDED
+  :PANGO_STRETCH_EXPANDED
+  :PANGO_STRETCH_EXTRA_EXPANDED
+  :PANGO_STRETCH_ULTRA_EXPANDED)
 
 (cffi:defcenum PangoFontMask
-	(:PANGO_FONT_MASK_FAMILY 1)
-	(:PANGO_FONT_MASK_STYLE 2)
-	(:PANGO_FONT_MASK_VARIANT 4)
-	(:PANGO_FONT_MASK_WEIGHT 8)
-	(:PANGO_FONT_MASK_STRETCH 16)
-	(:PANGO_FONT_MASK_SIZE 32)
-	(:PANGO_FONT_MASK_GRAVITY 64))
+  (:PANGO_FONT_MASK_FAMILY 1)
+  (:PANGO_FONT_MASK_STYLE 2)
+  (:PANGO_FONT_MASK_VARIANT 4)
+  (:PANGO_FONT_MASK_WEIGHT 8)
+  (:PANGO_FONT_MASK_STRETCH 16)
+  (:PANGO_FONT_MASK_SIZE 32)
+  (:PANGO_FONT_MASK_GRAVITY 64))
 
 (cffi:defcstruct PangoFontMetrics
-	(ref_count :pointer)
-	(ascent :int)
-	(descent :int)
-	(approximate_char_width :int)
-	(approximate_digit_width :int)
-	(underline_position :int)
-	(underline_thickness :int)
-	(strikethrough_position :int)
-	(strikethrough_thickness :int))
+  (ref_count :pointer)
+  (ascent :int)
+  (descent :int)
+  (approximate_char_width :int)
+  (approximate_digit_width :int)
+  (underline_position :int)
+  (underline_thickness :int)
+  (strikethrough_position :int)
+  (strikethrough_thickness :int))
 
 (cffi:defcstruct PangoFontsetClass
-	(parent_class :pointer)
-	(get_font :pointer)
-	(get_metrics :pointer)
-	(get_language :pointer)
-	(foreach :pointer))
+  (parent_class :pointer)
+  (get_font :pointer)
+  (get_metrics :pointer)
+  (get_language :pointer)
+  (foreach :pointer))
 
 (cffi:defcstruct PangoFontMapClass
-	(parent_class :pointer)
-	(load_font :pointer)
-	(list_families :pointer)
-	(load_fontset :pointer)
-	(shape_engine_type :string))
+  (parent_class :pointer)
+  (load_font :pointer)
+  (list_families :pointer)
+  (load_fontset :pointer)
+  (shape_engine_type :string))
 
 (cffi:defcfun ("pango_font_description_new" pango_font_description_new) :pointer)
 
@@ -658,7 +658,7 @@
   (metrics :pointer))
 
 (cffi:defcvar ("PangoFont" PangoFont)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_font_find_shaper" pango_font_find_shaper) :pointer
   (font :pointer)
@@ -689,7 +689,7 @@
   (font :pointer))
 
 (cffi:defcvar ("PangoFontFamily" PangoFontFamily)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_font_family_get_name" pango_font_family_get_name) :string
   (family :pointer))
@@ -703,7 +703,7 @@
   (n_faces :pointer))
 
 (cffi:defcvar ("PangoFontFace" PangoFontFace)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_font_face_get_face_name" pango_font_face_get_face_name) :string
   (face :pointer))
@@ -720,7 +720,7 @@
   (face :pointer))
 
 (cffi:defcvar ("PangoFontMap" PangoFontMap)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_font_map_create_context" pango_font_map_create_context) :pointer
   (fontmap :pointer))
@@ -745,7 +745,7 @@
   (fontmap :pointer))
 
 (cffi:defcvar ("PangoFontset" PangoFontset)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_fontset_get_font" pango_fontset_get_font) :pointer
   (fontset :pointer)
@@ -755,7 +755,7 @@
   (fontset :pointer))
 
 (cffi:defcvar ("PangoFontsetForeachFunc" PangoFontsetForeachFunc)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_fontset_foreach" pango_fontset_foreach) :void
   (fontset :pointer)
@@ -763,7 +763,7 @@
   (data :pointer))
 
 (cffi:defcvar ("PangoFontsetSimple" PangoFontsetSimple)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_fontset_simple_new" pango_fontset_simple_new) :pointer
   (language :pointer))
@@ -776,92 +776,92 @@
   (fontset :pointer))
 
 (cffi:defcenum PangoAttrType
-	:PANGO_ATTR_INVALID
-	:PANGO_ATTR_LANGUAGE
-	:PANGO_ATTR_FAMILY
-	:PANGO_ATTR_STYLE
-	:PANGO_ATTR_WEIGHT
-	:PANGO_ATTR_VARIANT
-	:PANGO_ATTR_STRETCH
-	:PANGO_ATTR_SIZE
-	:PANGO_ATTR_FONT_DESC
-	:PANGO_ATTR_FOREGROUND
-	:PANGO_ATTR_BACKGROUND
-	:PANGO_ATTR_UNDERLINE
-	:PANGO_ATTR_STRIKETHROUGH
-	:PANGO_ATTR_RISE
-	:PANGO_ATTR_SHAPE
-	:PANGO_ATTR_SCALE
-	:PANGO_ATTR_FALLBACK
-	:PANGO_ATTR_LETTER_SPACING
-	:PANGO_ATTR_UNDERLINE_COLOR
-	:PANGO_ATTR_STRIKETHROUGH_COLOR
-	:PANGO_ATTR_ABSOLUTE_SIZE
-	:PANGO_ATTR_GRAVITY
-	:PANGO_ATTR_GRAVITY_HINT)
+  :PANGO_ATTR_INVALID
+  :PANGO_ATTR_LANGUAGE
+  :PANGO_ATTR_FAMILY
+  :PANGO_ATTR_STYLE
+  :PANGO_ATTR_WEIGHT
+  :PANGO_ATTR_VARIANT
+  :PANGO_ATTR_STRETCH
+  :PANGO_ATTR_SIZE
+  :PANGO_ATTR_FONT_DESC
+  :PANGO_ATTR_FOREGROUND
+  :PANGO_ATTR_BACKGROUND
+  :PANGO_ATTR_UNDERLINE
+  :PANGO_ATTR_STRIKETHROUGH
+  :PANGO_ATTR_RISE
+  :PANGO_ATTR_SHAPE
+  :PANGO_ATTR_SCALE
+  :PANGO_ATTR_FALLBACK
+  :PANGO_ATTR_LETTER_SPACING
+  :PANGO_ATTR_UNDERLINE_COLOR
+  :PANGO_ATTR_STRIKETHROUGH_COLOR
+  :PANGO_ATTR_ABSOLUTE_SIZE
+  :PANGO_ATTR_GRAVITY
+  :PANGO_ATTR_GRAVITY_HINT)
 
 (cffi:defcenum PangoUnderline
-	:PANGO_UNDERLINE_NONE
-	:PANGO_UNDERLINE_SINGLE
-	:PANGO_UNDERLINE_DOUBLE
-	:PANGO_UNDERLINE_LOW
-	:PANGO_UNDERLINE_ERROR)
+  :PANGO_UNDERLINE_NONE
+  :PANGO_UNDERLINE_SINGLE
+  :PANGO_UNDERLINE_DOUBLE
+  :PANGO_UNDERLINE_LOW
+  :PANGO_UNDERLINE_ERROR)
 
 (cffi:defcstruct PangoAttrClass
-	(type PangoAttrType)
-	(copy :pointer)
-	(destroy :pointer)
-	(equal :pointer))
+  (type PangoAttrType)
+  (copy :pointer)
+  (destroy :pointer)
+  (equal :pointer))
 
 (cffi:defcstruct PangoAttribute
-	(klass :pointer)
-	(start_index :uint)
-	(end_index :uint))
+  (klass :pointer)
+  (start_index :uint)
+  (end_index :uint))
 
 (cl:defconstant PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING 0)
 (cl:defconstant PANGO_ATTR_INDEX_TO_TEXT_END -1)
 
 (cffi:defcstruct PangoAttrString
-	(attr PangoAttribute)
-	(value :string))
+  (attr PangoAttribute)
+  (value :string))
 
 (cffi:defcstruct PangoAttrLanguage
-	(attr PangoAttribute)
-	(value :pointer))
+  (attr PangoAttribute)
+  (value :pointer))
 
 (cffi:defcstruct PangoAttrColor
-	(attr PangoAttribute)
-	(color :pointer))
+  (attr PangoAttribute)
+  (color :pointer))
 
 (cffi:defcstruct PangoAttrInt
-	(attr PangoAttribute)
-	(value :int))
+  (attr PangoAttribute)
+  (value :int))
 
 (cffi:defcstruct PangoAttrFloat
-	(attr PangoAttribute)
-	(value :double))
+  (attr PangoAttribute)
+  (value :double))
 
 (cffi:defcstruct PangoAttrFontDesc
-	(attr PangoAttribute)
-	(desc :pointer))
+  (attr PangoAttribute)
+  (desc :pointer))
 
 (cffi:defcstruct PangoAttrShape
-	(attr PangoAttribute)
-	(ink_rect PangoRectangle)
-	(logical_rect PangoRectangle)
-	(data :pointer)
-	(copy_func :pointer)
-	(destroy_func :pointer))
+  (attr PangoAttribute)
+  (ink_rect PangoRectangle)
+  (logical_rect PangoRectangle)
+  (data :pointer)
+  (copy_func :pointer)
+  (destroy_func :pointer))
 
 (cffi:defcstruct PangoAttrSize
-	(attr PangoAttribute)
-	(size :int)
-	(absolute :pointer))
+  (attr PangoAttribute)
+  (size :int)
+  (absolute :pointer))
 
 (cffi:defcstruct PangoColor
-	(red :pointer)
-	(green :pointer)
-	(blue :pointer))
+  (red :pointer)
+  (green :pointer)
+  (blue :pointer))
 
 (cffi:defcfun ("pango_parse_markup" pango_parse_markup) :int
   (markup_text :string)
@@ -957,7 +957,7 @@
   (destroy_func :pointer))
 
 (cffi:defcvar ("PangoAttrDataCopyFunc" PangoAttrDataCopyFunc)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_attr_scale_new" pango_attr_scale_new) :pointer
   (scale_factor :double))
@@ -1005,7 +1005,7 @@
   (color :pointer))
 
 (cffi:defcvar ("PangoAttrList" PangoAttrList)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_attr_list_new" pango_attr_list_new) :pointer)
 
@@ -1042,13 +1042,13 @@
   (data :pointer))
 
 (cffi:defcvar ("PangoAttrFilterFunc" PangoAttrFilterFunc)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_attr_list_get_iterator" pango_attr_list_get_iterator) :pointer
   (list :pointer))
 
 (cffi:defcvar ("PangoAttrIterator" PangoAttrIterator)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_attr_iterator_copy" pango_attr_iterator_copy) :pointer
   (iterator :pointer))
@@ -1078,10 +1078,10 @@
   (iterator :pointer))
 
 (cffi:defcvar ("PangoTabArray" PangoTabArray)
- :pointer)
+    :pointer)
 
 (cffi:defcenum PangoTabAlign
-	:PANGO_TAB_LEFT)
+  :PANGO_TAB_LEFT)
 
 (cffi:defcfun ("pango_tab_array_new" pango_tab_array_new) :pointer
   (initial_size :int)
@@ -1128,30 +1128,30 @@
   (tab_array :pointer))
 
 (cffi:defcvar ("PangoLayout" PangoLayout)
- :pointer)
+    :pointer)
 
 (cffi:defcvar ("PangoLayoutIter" PangoLayoutIter)
- :pointer)
+    :pointer)
 
 (cffi:defcenum PangoWrapMode
-	:PANGO_WRAP_WORD
-	:PANGO_WRAP_CHAR
-	:PANGO_WRAP_WORD_CHAR)
+  :PANGO_WRAP_WORD
+  :PANGO_WRAP_CHAR
+  :PANGO_WRAP_WORD_CHAR)
 
 (cffi:defcenum PangoEllipsizeMode
-	:PANGO_ELLIPSIZE_NONE
-	:PANGO_ELLIPSIZE_START
-	:PANGO_ELLIPSIZE_MIDDLE
-	:PANGO_ELLIPSIZE_END)
+  :PANGO_ELLIPSIZE_NONE
+  :PANGO_ELLIPSIZE_START
+  :PANGO_ELLIPSIZE_MIDDLE
+  :PANGO_ELLIPSIZE_END)
 
 (cffi:defcenum PangoAlignment
-	:PANGO_ALIGN_LEFT
-	:PANGO_ALIGN_CENTER
-	:PANGO_ALIGN_RIGHT)
+  :PANGO_ALIGN_LEFT
+  :PANGO_ALIGN_CENTER
+  :PANGO_ALIGN_RIGHT)
 
 (cffi:defcstruct PangoGlyphItem
-	(item :pointer)
-	(glyphs :pointer))
+  (item :pointer)
+  (glyphs :pointer))
 
 (cffi:defcfun ("pango_layout_new" pango_layout_new) :pointer
   (context :pointer))
@@ -1474,88 +1474,88 @@
   (n_ranges :pointer))
 
 (cffi:defcenum PangoScript
-	(:PANGO_SCRIPT_INVALID_CODE -1)
-	(:PANGO_SCRIPT_COMMON 0)
-	:PANGO_SCRIPT_INHERITED
-	:PANGO_SCRIPT_ARABIC
-	:PANGO_SCRIPT_ARMENIAN
-	:PANGO_SCRIPT_BENGALI
-	:PANGO_SCRIPT_BOPOMOFO
-	:PANGO_SCRIPT_CHEROKEE
-	:PANGO_SCRIPT_COPTIC
-	:PANGO_SCRIPT_CYRILLIC
-	:PANGO_SCRIPT_DESERET
-	:PANGO_SCRIPT_DEVANAGARI
-	:PANGO_SCRIPT_ETHIOPIC
-	:PANGO_SCRIPT_GEORGIAN
-	:PANGO_SCRIPT_GOTHIC
-	:PANGO_SCRIPT_GREEK
-	:PANGO_SCRIPT_GUJARATI
-	:PANGO_SCRIPT_GURMUKHI
-	:PANGO_SCRIPT_HAN
-	:PANGO_SCRIPT_HANGUL
-	:PANGO_SCRIPT_HEBREW
-	:PANGO_SCRIPT_HIRAGANA
-	:PANGO_SCRIPT_KANNADA
-	:PANGO_SCRIPT_KATAKANA
-	:PANGO_SCRIPT_KHMER
-	:PANGO_SCRIPT_LAO
-	:PANGO_SCRIPT_LATIN
-	:PANGO_SCRIPT_MALAYALAM
-	:PANGO_SCRIPT_MONGOLIAN
-	:PANGO_SCRIPT_MYANMAR
-	:PANGO_SCRIPT_OGHAM
-	:PANGO_SCRIPT_OLD_ITALIC
-	:PANGO_SCRIPT_ORIYA
-	:PANGO_SCRIPT_RUNIC
-	:PANGO_SCRIPT_SINHALA
-	:PANGO_SCRIPT_SYRIAC
-	:PANGO_SCRIPT_TAMIL
-	:PANGO_SCRIPT_TELUGU
-	:PANGO_SCRIPT_THAANA
-	:PANGO_SCRIPT_THAI
-	:PANGO_SCRIPT_TIBETAN
-	:PANGO_SCRIPT_CANADIAN_ABORIGINAL
-	:PANGO_SCRIPT_YI
-	:PANGO_SCRIPT_TAGALOG
-	:PANGO_SCRIPT_HANUNOO
-	:PANGO_SCRIPT_BUHID
-	:PANGO_SCRIPT_TAGBANWA
-	:PANGO_SCRIPT_BRAILLE
-	:PANGO_SCRIPT_CYPRIOT
-	:PANGO_SCRIPT_LIMBU
-	:PANGO_SCRIPT_OSMANYA
-	:PANGO_SCRIPT_SHAVIAN
-	:PANGO_SCRIPT_LINEAR_B
-	:PANGO_SCRIPT_TAI_LE
-	:PANGO_SCRIPT_UGARITIC
-	:PANGO_SCRIPT_NEW_TAI_LUE
-	:PANGO_SCRIPT_BUGINESE
-	:PANGO_SCRIPT_GLAGOLITIC
-	:PANGO_SCRIPT_TIFINAGH
-	:PANGO_SCRIPT_SYLOTI_NAGRI
-	:PANGO_SCRIPT_OLD_PERSIAN
-	:PANGO_SCRIPT_KHAROSHTHI
-	:PANGO_SCRIPT_UNKNOWN
-	:PANGO_SCRIPT_BALINESE
-	:PANGO_SCRIPT_CUNEIFORM
-	:PANGO_SCRIPT_PHOENICIAN
-	:PANGO_SCRIPT_PHAGS_PA
-	:PANGO_SCRIPT_NKO
-	:PANGO_SCRIPT_KAYAH_LI
-	:PANGO_SCRIPT_LEPCHA
-	:PANGO_SCRIPT_REJANG
-	:PANGO_SCRIPT_SUNDANESE
-	:PANGO_SCRIPT_SAURASHTRA
-	:PANGO_SCRIPT_CHAM
-	:PANGO_SCRIPT_OL_CHIKI
-	:PANGO_SCRIPT_VAI
-	:PANGO_SCRIPT_CARIAN
-	:PANGO_SCRIPT_LYCIAN
-	:PANGO_SCRIPT_LYDIAN)
+  (:PANGO_SCRIPT_INVALID_CODE -1)
+  (:PANGO_SCRIPT_COMMON 0)
+  :PANGO_SCRIPT_INHERITED
+  :PANGO_SCRIPT_ARABIC
+  :PANGO_SCRIPT_ARMENIAN
+  :PANGO_SCRIPT_BENGALI
+  :PANGO_SCRIPT_BOPOMOFO
+  :PANGO_SCRIPT_CHEROKEE
+  :PANGO_SCRIPT_COPTIC
+  :PANGO_SCRIPT_CYRILLIC
+  :PANGO_SCRIPT_DESERET
+  :PANGO_SCRIPT_DEVANAGARI
+  :PANGO_SCRIPT_ETHIOPIC
+  :PANGO_SCRIPT_GEORGIAN
+  :PANGO_SCRIPT_GOTHIC
+  :PANGO_SCRIPT_GREEK
+  :PANGO_SCRIPT_GUJARATI
+  :PANGO_SCRIPT_GURMUKHI
+  :PANGO_SCRIPT_HAN
+  :PANGO_SCRIPT_HANGUL
+  :PANGO_SCRIPT_HEBREW
+  :PANGO_SCRIPT_HIRAGANA
+  :PANGO_SCRIPT_KANNADA
+  :PANGO_SCRIPT_KATAKANA
+  :PANGO_SCRIPT_KHMER
+  :PANGO_SCRIPT_LAO
+  :PANGO_SCRIPT_LATIN
+  :PANGO_SCRIPT_MALAYALAM
+  :PANGO_SCRIPT_MONGOLIAN
+  :PANGO_SCRIPT_MYANMAR
+  :PANGO_SCRIPT_OGHAM
+  :PANGO_SCRIPT_OLD_ITALIC
+  :PANGO_SCRIPT_ORIYA
+  :PANGO_SCRIPT_RUNIC
+  :PANGO_SCRIPT_SINHALA
+  :PANGO_SCRIPT_SYRIAC
+  :PANGO_SCRIPT_TAMIL
+  :PANGO_SCRIPT_TELUGU
+  :PANGO_SCRIPT_THAANA
+  :PANGO_SCRIPT_THAI
+  :PANGO_SCRIPT_TIBETAN
+  :PANGO_SCRIPT_CANADIAN_ABORIGINAL
+  :PANGO_SCRIPT_YI
+  :PANGO_SCRIPT_TAGALOG
+  :PANGO_SCRIPT_HANUNOO
+  :PANGO_SCRIPT_BUHID
+  :PANGO_SCRIPT_TAGBANWA
+  :PANGO_SCRIPT_BRAILLE
+  :PANGO_SCRIPT_CYPRIOT
+  :PANGO_SCRIPT_LIMBU
+  :PANGO_SCRIPT_OSMANYA
+  :PANGO_SCRIPT_SHAVIAN
+  :PANGO_SCRIPT_LINEAR_B
+  :PANGO_SCRIPT_TAI_LE
+  :PANGO_SCRIPT_UGARITIC
+  :PANGO_SCRIPT_NEW_TAI_LUE
+  :PANGO_SCRIPT_BUGINESE
+  :PANGO_SCRIPT_GLAGOLITIC
+  :PANGO_SCRIPT_TIFINAGH
+  :PANGO_SCRIPT_SYLOTI_NAGRI
+  :PANGO_SCRIPT_OLD_PERSIAN
+  :PANGO_SCRIPT_KHAROSHTHI
+  :PANGO_SCRIPT_UNKNOWN
+  :PANGO_SCRIPT_BALINESE
+  :PANGO_SCRIPT_CUNEIFORM
+  :PANGO_SCRIPT_PHOENICIAN
+  :PANGO_SCRIPT_PHAGS_PA
+  :PANGO_SCRIPT_NKO
+  :PANGO_SCRIPT_KAYAH_LI
+  :PANGO_SCRIPT_LEPCHA
+  :PANGO_SCRIPT_REJANG
+  :PANGO_SCRIPT_SUNDANESE
+  :PANGO_SCRIPT_SAURASHTRA
+  :PANGO_SCRIPT_CHAM
+  :PANGO_SCRIPT_OL_CHIKI
+  :PANGO_SCRIPT_VAI
+  :PANGO_SCRIPT_CARIAN
+  :PANGO_SCRIPT_LYCIAN
+  :PANGO_SCRIPT_LYDIAN)
 
 (cffi:defcvar ("PangoScriptIter" PangoScriptIter)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_script_for_unichar" pango_script_for_unichar) PangoScript
   (ch :pointer))
@@ -1580,7 +1580,7 @@
   (iter :pointer))
 
 (cffi:defcvar ("PangoLanguage" PangoLanguage)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_language_from_string" pango_language_from_string) :pointer
   (language :string))
@@ -1606,13 +1606,13 @@
   (language :pointer))
 
 (cffi:defcenum PangoDirection
-	:PANGO_DIRECTION_LTR
-	:PANGO_DIRECTION_RTL
-	:PANGO_DIRECTION_TTB_LTR
-	:PANGO_DIRECTION_TTB_RTL
-	:PANGO_DIRECTION_WEAK_LTR
-	:PANGO_DIRECTION_WEAK_RTL
-	:PANGO_DIRECTION_NEUTRAL)
+  :PANGO_DIRECTION_LTR
+  :PANGO_DIRECTION_RTL
+  :PANGO_DIRECTION_TTB_LTR
+  :PANGO_DIRECTION_TTB_RTL
+  :PANGO_DIRECTION_WEAK_LTR
+  :PANGO_DIRECTION_WEAK_RTL
+  :PANGO_DIRECTION_NEUTRAL)
 
 (cffi:defcfun ("pango_unichar_direction" pango_unichar_direction) PangoDirection
   (ch :pointer))
@@ -1626,40 +1626,40 @@
   (mirrored_ch :pointer))
 
 (cffi:defcenum PangoBidiType
-	:PANGO_BIDI_TYPE_L
-	:PANGO_BIDI_TYPE_LRE
-	:PANGO_BIDI_TYPE_LRO
-	:PANGO_BIDI_TYPE_R
-	:PANGO_BIDI_TYPE_AL
-	:PANGO_BIDI_TYPE_RLE
-	:PANGO_BIDI_TYPE_RLO
-	:PANGO_BIDI_TYPE_PDF
-	:PANGO_BIDI_TYPE_EN
-	:PANGO_BIDI_TYPE_ES
-	:PANGO_BIDI_TYPE_ET
-	:PANGO_BIDI_TYPE_AN
-	:PANGO_BIDI_TYPE_CS
-	:PANGO_BIDI_TYPE_NSM
-	:PANGO_BIDI_TYPE_BN
-	:PANGO_BIDI_TYPE_B
-	:PANGO_BIDI_TYPE_S
-	:PANGO_BIDI_TYPE_WS
-	:PANGO_BIDI_TYPE_ON)
+  :PANGO_BIDI_TYPE_L
+  :PANGO_BIDI_TYPE_LRE
+  :PANGO_BIDI_TYPE_LRO
+  :PANGO_BIDI_TYPE_R
+  :PANGO_BIDI_TYPE_AL
+  :PANGO_BIDI_TYPE_RLE
+  :PANGO_BIDI_TYPE_RLO
+  :PANGO_BIDI_TYPE_PDF
+  :PANGO_BIDI_TYPE_EN
+  :PANGO_BIDI_TYPE_ES
+  :PANGO_BIDI_TYPE_ET
+  :PANGO_BIDI_TYPE_AN
+  :PANGO_BIDI_TYPE_CS
+  :PANGO_BIDI_TYPE_NSM
+  :PANGO_BIDI_TYPE_BN
+  :PANGO_BIDI_TYPE_B
+  :PANGO_BIDI_TYPE_S
+  :PANGO_BIDI_TYPE_WS
+  :PANGO_BIDI_TYPE_ON)
 
 (cffi:defcfun ("pango_bidi_type_for_unichar" pango_bidi_type_for_unichar) PangoBidiType
   (ch :pointer))
 
 (cffi:defcenum PangoGravity
-	:PANGO_GRAVITY_SOUTH
-	:PANGO_GRAVITY_EAST
-	:PANGO_GRAVITY_NORTH
-	:PANGO_GRAVITY_WEST
-	:PANGO_GRAVITY_AUTO)
+  :PANGO_GRAVITY_SOUTH
+  :PANGO_GRAVITY_EAST
+  :PANGO_GRAVITY_NORTH
+  :PANGO_GRAVITY_WEST
+  :PANGO_GRAVITY_AUTO)
 
 (cffi:defcenum PangoGravityHint
-	:PANGO_GRAVITY_HINT_NATURAL
-	:PANGO_GRAVITY_HINT_STRONG
-	:PANGO_GRAVITY_HINT_LINE)
+  :PANGO_GRAVITY_HINT_NATURAL
+  :PANGO_GRAVITY_HINT_STRONG
+  :PANGO_GRAVITY_HINT_LINE)
 
 (cffi:defcfun ("pango_gravity_get_for_matrix" pango_gravity_get_for_matrix) PangoGravity
   (matrix :pointer))
@@ -1679,16 +1679,16 @@
   (gravity PangoGravity))
 
 (cffi:defcvar ("PangoCairoFont" PangoCairoFont)
- :pointer)
+    :pointer)
 
 (cffi:defcvar ("PangoCairoFontMap" PangoCairoFontMap)
- :pointer)
+    :pointer)
 
 (cffi:defcvar ("cairo_t" cairo_t)
- :pointer)
+    :pointer)
 
 (cffi:defcvar ("cairo_font_type_t" cairo_font_type_t)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_cairo_font_map_get_default" pango_cairo_font_map_get_default) :pointer)
 
@@ -1731,7 +1731,7 @@
   (context :pointer))
 
 (cffi:defcvar ("PangoCairoShapeRendererFunc" PangoCairoShapeRendererFunc)
- :pointer)
+    :pointer)
 
 (cffi:defcfun ("pango_cairo_context_set_shape_renderer" pango_cairo_context_set_shape_renderer) :void
   (context :pointer)
@@ -1804,10 +1804,10 @@
 
 
 (defmacro with-pango-object ((var object) &body body)
-    `(let ((,var ,object))
-       (unwind-protect
-	    (progn ,@body)
-	 (pango:g_object_unref ,var))))
+  `(let ((,var ,object))
+     (unwind-protect
+	  (progn ,@body)
+       (pango:g_object_unref ,var))))
 
 (defmacro with-layout ((&optional (var 'pango::*layout*) context) &body body)
   `(with-pango-object (,(or var 'pango::*layout*)
@@ -1824,12 +1824,12 @@
       `(progn ,@body)))
 
 (defmacro with-attribute-list ((&optional (var '*attribute-list*) (layout '*layout*)) &body body)
-    `(let ((,var (pango:pango_attr_list_new)))
-      (unwind-protect
-	   (prog1 
-	     ,@body
-	     (pango:pango_layout_set_attributes ,layout ,var))
-	(pango:pango_attr_list_unref ,var))))
+  `(let ((,var (pango:pango_attr_list_new)))
+     (unwind-protect
+	  (prog1 
+	      ,@body
+	    (pango:pango_layout_set_attributes ,layout ,var))
+       (pango:pango_attr_list_unref ,var))))
 
 
 (defmacro add-pango-attribute (attr-list attr &optional start end)
@@ -1845,10 +1845,10 @@
        ,(if start `(setf (cffi:foreign-slot-value ,a 'pangoattribute 'start_index) ,s))
        ,(if end `(setf (cffi:foreign-slot-value ,a 'pangoattribute 'end_index) ,e))
        (pango_attr_list_insert ,attrs ,a))))
-	     
+
 (defun ezcolor (value)
   (* 257 value))
-	   
+
 
 (defun get-line-from-position (layout pos)
   (cffi:with-foreign-objects ((line :int)
@@ -1865,7 +1865,7 @@
     (values 
      (/ (cffi:mem-aref w :int) PANGO_SCALE)
      (/ (cffi:mem-aref h :int) PANGO_SCALE))))
-	
+
 
 (defun get-layout-line-extents (line)
   (cffi:with-foreign-objects ((ink :pointer)
@@ -1874,7 +1874,15 @@
     (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
-	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE))))
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE)
+	    
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'x) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'y) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'width) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'height) PANGO_SCALE)
+	    
+	    
+	    )))
 
 (defun get-layout-extents (layout)
   (cffi:with-foreign-objects ((ink :pointer)
@@ -1883,7 +1891,13 @@
     (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
-	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE))))
+	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'x) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'y) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'width) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'height) PANGO_SCALE)
+
+	    )))
 
 (defun get-layout-lines-data (layout)
   (let* ((i 0)
@@ -1895,7 +1909,7 @@
 				   (list (cffi:foreign-slot-value data 'PangoLayoutLine 'start_index)
 					 (cffi:foreign-slot-value data 'PangoLayoutLine 'length)
 					 data)))
-				 
+		   
 		 do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))
 		 do (incf i))))
     ret))
@@ -1916,7 +1930,7 @@
      until (cffi-sys:null-pointer-p itr)
      collect (cffi:foreign-slot-value itr 'GSList 'data)
      do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))))
-	 
+
 
 (defun get-previous-line (layout index)
   (let ((lines (get-layout-lines layout)))
@@ -1948,28 +1962,28 @@
 	    (cffi:mem-aref trailing :int))))
 
 (defun get-glyph-position (layout index)
-	   (cffi:with-foreign-objects ((rect :pointer))
-	     (pango_layout_index_to_pos layout index rect)
-	     (unless (cffi-sys:null-pointer-p rect)
-	       (list (/ (cffi:foreign-slot-value rect 'PangoRectangle 'x) PANGO_SCALE)
-		     (/ (cffi:foreign-slot-value rect 'PangoRectangle 'y) PANGO_SCALE)
-		     (/ (cffi:foreign-slot-value rect 'PangoRectangle 'width) PANGO_SCALE)
-		     (/ (cffi:foreign-slot-value rect 'PangoRectangle 'height) PANGO_SCALE)))))
+  (cffi:with-foreign-objects ((rect :pointer))
+    (pango_layout_index_to_pos layout index rect)
+    (unless (cffi-sys:null-pointer-p rect)
+      (list (/ (cffi:foreign-slot-value rect 'PangoRectangle 'x) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value rect 'PangoRectangle 'y) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value rect 'PangoRectangle 'width) PANGO_SCALE)
+	    (/ (cffi:foreign-slot-value rect 'PangoRectangle 'height) PANGO_SCALE)))))
 
 (defun get-cursor-pos (layout index)
-	   (cffi:with-foreign-objects ((strong :pointer)
-				       (weak :pointer))
-	     (pango_layout_get_cursor_pos layout index strong weak)
-	     (values (unless (cffi-sys:null-pointer-p strong)
-		       (list (/ (cffi:foreign-slot-value strong 'PangoRectangle 'x) PANGO_SCALE)
-			     (/ (cffi:foreign-slot-value strong 'PangoRectangle 'y) PANGO_SCALE)
-			     (/ (cffi:foreign-slot-value strong 'PangoRectangle 'width) PANGO_SCALE)
-			     (/ (cffi:foreign-slot-value strong 'PangoRectangle 'height) PANGO_SCALE)))
-		     (unless (cffi-sys:null-pointer-p weak)
-		       (list (/ (cffi:foreign-slot-value weak 'PangoRectangle 'x) PANGO_SCALE)
-			     (/ (cffi:foreign-slot-value weak 'PangoRectangle 'y) PANGO_SCALE)
-			     (/ (cffi:foreign-slot-value weak 'PangoRectangle 'width) PANGO_SCALE)
-			     (/ (cffi:foreign-slot-value weak 'PangoRectangle 'height) PANGO_SCALE))))))
+  (cffi:with-foreign-objects ((strong :pointer)
+			      (weak :pointer))
+    (pango_layout_get_cursor_pos layout index strong weak)
+    (values (unless (cffi-sys:null-pointer-p strong)
+	      (list (/ (cffi:foreign-slot-value strong 'PangoRectangle 'x) PANGO_SCALE)
+		    (/ (cffi:foreign-slot-value strong 'PangoRectangle 'y) PANGO_SCALE)
+		    (/ (cffi:foreign-slot-value strong 'PangoRectangle 'width) PANGO_SCALE)
+		    (/ (cffi:foreign-slot-value strong 'PangoRectangle 'height) PANGO_SCALE)))
+	    (unless (cffi-sys:null-pointer-p weak)
+	      (list (/ (cffi:foreign-slot-value weak 'PangoRectangle 'x) PANGO_SCALE)
+		    (/ (cffi:foreign-slot-value weak 'PangoRectangle 'y) PANGO_SCALE)
+		    (/ (cffi:foreign-slot-value weak 'PangoRectangle 'width) PANGO_SCALE)
+		    (/ (cffi:foreign-slot-value weak 'PangoRectangle 'height) PANGO_SCALE))))))
 
 
 (defun list-font-families (&optional (font-map (pango_cairo_font_map_get_default))) 
@@ -1980,7 +1994,7 @@
       (prog1 (loop for i from 0 to (1- len)
 		collect (cffi:mem-aref (cffi:mem-aref l :pointer ) :pointer i))
 	(g_object_unref l)))))
-		     
+
 (defun list-font-family-names (&optional (font-map (pango_cairo_font_map_get_default))) 
   (cffi:with-foreign-objects ((c :int)
 			      (l :pointer))
@@ -2055,26 +2069,26 @@
 	 (pango_layout_set_width ,layout ,gwidth))
        
        (pango_layout_set_alignment ,layout ,alignment)
-	 (unwind-protect
-	      (progn ,@body)
-	   (g_object_unref ,layout)))))
+       (unwind-protect
+	    (progn ,@body)
+	 (g_object_unref ,layout)))))
 
 (defmacro print-with-attributes ((text &key context (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
-    `(with-layout ()
-       (with-paragraph (:alignment ,alignment
-				   :width ,(or width
-					       `(cairo:width cairo::*context*)) :wrap ,wrap)
-	 (cairo:save)
-	 (pango:pango_layout_set_text *layout* ,text -1)
-	 (with-attribute-list ()
-	   ,@body)
-	 
-	 (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-	 (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-	 (cairo:restore)
-	 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))
-     )
-  
+  `(with-layout ()
+     (with-paragraph (:alignment ,alignment
+				 :width ,(or width
+					     `(cairo:width cairo::*context*)) :wrap ,wrap)
+       (cairo:save)
+       (pango:pango_layout_set_text *layout* ,text -1)
+       (with-attribute-list ()
+	 ,@body)
+       
+       (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+       (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+       (cairo:restore)
+       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))
+  )
+
 
 (defun set-attribute-start-end (attr &optional start end)
   (setf (cffi:foreign-slot-value attr 'pango::pangoattribute 'pango::start_index)
@@ -2130,15 +2144,9 @@
     (if (or start end)
 	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
 	(pango:pango_attr_list_insert attribute-list attr))))
-	       
+
 (defun add-variant-attribute (variant &key start end (attribute-list *attribute-list*))
   (let ((attr (pango_attr_variant_new variant)))
-    (if (or start end)
-	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
-	(pango:pango_attr_list_insert attribute-list attr))))
-
-(defun add-stretch-attribute (stretch &key start end (attribute-list *attribute-list*))
-  (let ((attr (pango_attr_stretch_new stretch)))
     (if (or start end)
 	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
 	(pango:pango_attr_list_insert attribute-list attr))))
