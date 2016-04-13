@@ -1896,7 +1896,6 @@
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'y) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'width) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'height) PANGO_SCALE)
-
 	    )))
 
 (defun get-layout-lines-data (layout)
@@ -2054,14 +2053,14 @@
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
-(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) (width (cairo:width  cairo::*context*)) (wrap :pango_wrap_word)) &body body)
+(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
 	(gwrap (gensym)))
 
     `(let ((,layout (pango_cairo_create_layout
 		     (slot-value ,context 'cairo::pointer)))
-	   (,gwidth (* pango_scale ,width))			  
+	   (,gwidth (* pango_scale ,(or width '(cairo:width cairo::*context*))))
 	   (,gwrap ,wrap))
        
        (when (and ,gwidth ,gwrap)
