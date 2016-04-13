@@ -5,7 +5,6 @@
   (:use #:cl)
   (:export
 
-   #:WITH-CONTEXT-FROM-SURFACE
    #:CLEAR-CAIRO-CONTEXT
    #:PRINT-RAW-TEXT
    #:PRINT-TEXT
