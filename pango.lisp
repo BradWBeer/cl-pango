@@ -1868,8 +1868,8 @@
 
 
 (defun get-layout-line-extents (line)
-  (cffi:with-foreign-objects ((ink :pointer)
-			      (logical :pointer))
+  (cffi:with-foreign-objects ((ink 'PangoRectangle)
+			      (logical 'PangoRectangle))
     (pango_layout_line_get_extents line ink logical)      
     (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
@@ -1885,8 +1885,8 @@
 	    )))
 
 (defun get-layout-extents (layout)
-  (cffi:with-foreign-objects ((ink :pointer)
-			      (logical :pointer))
+  (cffi:with-foreign-objects ((ink 'PangoRectangle)
+			      (logical 'PangoRectangle))
     (pango_layout_get_extents layout ink logical)      
     (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
@@ -1962,7 +1962,7 @@
 	    (cffi:mem-aref trailing :int))))
 
 (defun get-glyph-position (layout index)
-  (cffi:with-foreign-objects ((rect :pointer))
+  (cffi:with-foreign-objects ((rect 'PangoRectangle))
     (pango_layout_index_to_pos layout index rect)
     (unless (cffi-sys:null-pointer-p rect)
       (list (/ (cffi:foreign-slot-value rect 'PangoRectangle 'x) PANGO_SCALE)
@@ -1971,8 +1971,8 @@
 	    (/ (cffi:foreign-slot-value rect 'PangoRectangle 'height) PANGO_SCALE)))))
 
 (defun get-cursor-pos (layout index)
-  (cffi:with-foreign-objects ((strong :pointer)
-			      (weak :pointer))
+  (cffi:with-foreign-objects ((strong 'PangoRectangle)
+			      (weak 'PangoRectangle))
     (pango_layout_get_cursor_pos layout index strong weak)
     (values (unless (cffi-sys:null-pointer-p strong)
 	      (list (/ (cffi:foreign-slot-value strong 'PangoRectangle 'x) PANGO_SCALE)
