@@ -7,6 +7,6 @@
   :serial t
   :components ((:file "package")
 	       (:file "library")
-	       (:file "pango")
-	       (:file "cairo")))
+	       (:file "cairo")
+	       (:file "pango")))
 			       

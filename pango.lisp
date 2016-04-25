@@ -2038,10 +2038,11 @@
      (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (cairo:restore)
+     (unless (cairo:has-current-point) (cairo:move-to 0 0))
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 (defmacro print-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_CENTER))
-  "Print a block of text."
+  "Print a block of text with markup."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
 
@@ -2051,17 +2052,18 @@
      (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (cairo:restore)
+     (unless (cairo:has-current-point) (cairo:move-to 0 0))
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
-(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) (width (cairo:width  cairo::*context*)) (wrap :pango_wrap_word)) &body body)
+(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
 	(gwrap (gensym)))
 
     `(let ((,layout (pango_cairo_create_layout
 		     (slot-value ,context 'cairo::pointer)))
-	   (,gwidth (* pango_scale ,width))			  
+	   (,gwidth (* pango_scale (or ,width (cairo:width  ,context))))
 	   (,gwrap ,wrap))
        
        (when (and ,gwidth ,gwrap)
@@ -2086,8 +2088,8 @@
        (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
        (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
        (cairo:restore)
-       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))
-  )
+       (unless (cairo:has-current-point) (cairo:move-to 0 0))
+       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))
 
 
 (defun set-attribute-start-end (attr &optional start end)
