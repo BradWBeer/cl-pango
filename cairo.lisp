@@ -1,27 +1,7 @@
 (in-package #:cl-cairo2) 
 
-(defmacro with-surface ((surface &optional surface-name) &body body)
-  (let ((var-name (or surface-name '*surface*)))
-    `(let ((,var-name ,surface))
-       (unwind-protect
-	    (progn ,@body)
-       
-	 (progn (surface-finish ,var-name)
-		(destroy ,var-name))))))
+(defun has-current-point (&optional (context *context*))
+  (with-context-pointer (context pointer)
+    (= 1 (cairo_has_current_point pointer))))
 
-(defmacro with-context-from-surface ((surface) &body body)
-  (let ((context (gensym "context")))
-    `(let ((,context (create-context ,surface)))
-       (unwind-protect
-	    (with-context (,context)
-	      ,@body)	      
-	 (destroy ,context)))))
-
-
-(defmacro with-surface-and-context ((surface &optional surface-name) &body body)
-  (let ((var-name (or surface-name '*surface*)))
-    `(with-surface (,surface ,var-name)
-       (with-context-from-surface (,var-name)
-	 ,@body))))
-
-(export '(with-surface with-context-from-surface with-surface-and-context))
+(export 'has-current-point)
