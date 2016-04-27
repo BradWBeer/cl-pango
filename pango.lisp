@@ -815,8 +815,8 @@
 
 (cffi:defcstruct PangoAttribute
   (klass :pointer)
-  (start_index :uint)
-  (end_index :uint))
+  (start_index :int)
+  (end_index :int))
 
 (cl:defconstant PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING 0)
 (cl:defconstant PANGO_ATTR_INDEX_TO_TEXT_END -1)
@@ -1884,7 +1884,7 @@
 	    
 	    )))
 
-(defun get-layout-extents (layout)
+(defun get-layout-extents (&optional (layout *layout*))
   (cffi:with-foreign-objects ((ink 'PangoRectangle)
 			      (logical 'PangoRectangle))
     (pango_layout_get_extents layout ink logical)      
@@ -1927,6 +1927,12 @@
 
 (defun get-layout-lines (layout)
   (loop with itr = (pango_layout_get_lines layout)
+     until (cffi-sys:null-pointer-p itr)
+     collect (cffi:foreign-slot-value itr 'GSList 'data)
+     do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))))
+
+(defun get-layout-lines-ro (layout)
+  (loop with itr = (pango_layout_get_lines_readonly layout)
      until (cffi-sys:null-pointer-p itr)
      collect (cffi:foreign-slot-value itr 'GSList 'data)
      do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))))
@@ -2056,7 +2062,7 @@
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
-(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
+(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_LEFT) width (wrap :pango_wrap_word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
 	(gwrap (gensym)))
@@ -2074,23 +2080,6 @@
        (unwind-protect
 	    (progn ,@body)
 	 (g_object_unref ,layout)))))
-
-(defmacro print-with-attributes ((text &key context (alignment :PANGO_ALIGN_CENTER) width (wrap :pango_wrap_word)) &body body)
-  `(with-layout ()
-     (with-paragraph (:alignment ,alignment
-				 :width ,(or width
-					     `(cairo:width cairo::*context*)) :wrap ,wrap)
-       (cairo:save)
-       (pango:pango_layout_set_text *layout* ,text -1)
-       (with-attribute-list ()
-	 ,@body)
-       
-       (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-       (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-       (cairo:restore)
-       (unless (cairo:has-current-point) (cairo:move-to 0 0))
-       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))
-
 
 (defun set-attribute-start-end (attr &optional start end)
   (setf (cffi:foreign-slot-value attr 'pango::pangoattribute 'pango::start_index)
@@ -2201,3 +2190,46 @@
     (if (or start end)
 	(pango:pango_attr_list_insert attribute-list (set-attribute-start-end attr start end))
 	(pango:pango_attr_list_insert attribute-list attr))))
+
+(defparameter *alist-attributes*
+  `((:foreground-color . ,#'add-foreground-color-attribute)
+    (:background-color . ,#'add-background-color-attribute)
+    (:size . ,#'add-size-attribute)
+    (:absolute-size . ,#'add-absolute-size-attribute)
+    (:weight . ,#'add-weight-attribute)
+    (:family . ,#'add-family-attribute)
+    (:style . ,#'add-style-attribute)
+    (:variant . ,#'add-variant-attribute)
+    (:stretch . ,#'add-stretch-attribute)
+    (:strikethrough . ,#'add-strikethrough-attribute)
+    (:strikethrough-color . ,#'add-strikethrough-color-attribute)
+    (:underline . ,#'add-underline-attribute)
+    (:underline-color . ,#'add-underline-color-attribute)
+    (:rise . ,#'add-rise-attribute)
+    (:letter-spacing . ,#'add-letter-spacing-attribute)))
+
+
+(defmacro print-with-attributes ((text &key context (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word)) attributes &body body)
+  `(with-layout ()
+     (with-paragraph (:alignment ,alignment 
+				 :width ,(or width
+					     `(cairo:width cairo::*context*)) :wrap ,wrap)
+       (cairo:save)
+       (pango:pango_layout_set_text *layout* ,text -1)
+       (with-attribute-list ()
+	 (map nil 
+	      (lambda (a)
+		(apply
+		 (cdr (assoc (car a) *alist-attributes*))
+		 (cdr a)))
+	      ,attributes)
+	 (pango:pango_layout_set_attributes *layout* *attribute-list*)
+	 (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+	 
+	 ,@body)
+       
+       (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+       (cairo:restore)
+       (unless (cairo:has-current-point) (cairo:move-to 0 0))
+       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))
+
