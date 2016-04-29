@@ -1827,7 +1827,7 @@
   `(let ((,var (pango:pango_attr_list_new)))
      (unwind-protect
 	  (prog1 
-	      ,@body
+	      (progn ,@body)
 	    (pango:pango_layout_set_attributes ,layout ,var))
        (pango:pango_attr_list_unref ,var))))
 
@@ -2209,27 +2209,37 @@
     (:letter-spacing . ,#'add-letter-spacing-attribute)))
 
 
-(defmacro print-with-attributes ((text &key context (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word)) attributes &body body)
+(defmacro print-with-attributes ((text &key (context 'cairo:*context*) (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word) (draw t)) attributes &body body)
   `(with-layout ()
-     (with-paragraph (:alignment ,alignment 
+     (with-paragraph (:alignment ,alignment
+				 :context ,context
 				 :width ,(or width
 					     `(cairo:width cairo::*context*)) :wrap ,wrap)
        (cairo:save)
        (pango:pango_layout_set_text *layout* ,text -1)
-       (with-attribute-list ()
-	 (map nil 
-	      (lambda (a)
-		(apply
-		 (cdr (assoc (car a) *alist-attributes*))
-		 (cdr a)))
-	      ,attributes)
-	 (pango:pango_layout_set_attributes *layout* *attribute-list*)
-	 (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-	 
-	 ,@body)
        
-       (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-       (cairo:restore)
-       (unless (cairo:has-current-point) (cairo:move-to 0 0))
-       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))
+       (prog1
+	   (with-attribute-list ()
+	     (map nil 
+		  (lambda (a)
+		    (apply
+		     (cdr (assoc (car a) *alist-attributes*))
+		     (cdr a)))
+		  ,attributes)
+	     (pango:pango_layout_set_attributes *layout* *attribute-list*)
+	     (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+	     
+	     ,@body)
+	 
+	 (when ,draw (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*))
+	 (cairo:restore)
+	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
+		 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))))
 
+(defun get-size-for-text (text attributes &key width)
+  (cairo:with-surface-and-context (surf (cairo:create-image-surface :argb32 1000 1000))
+    (print-with-attributes (text :draw nil :width width) attributes
+      (multiple-value-list 
+	  (get-layout-extents pango::*layout*)))))
+
+	
