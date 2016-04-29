@@ -2062,7 +2062,7 @@
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
-(defmacro with-paragraph ((&key (layout *layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_LEFT) width (wrap :pango_wrap_word)) &body body)
+(defmacro with-paragraph ((&key (layout '*layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_LEFT) width (wrap :pango_wrap_word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
 	(gwrap (gensym)))
@@ -2240,6 +2240,6 @@
   (cairo:with-surface-and-context (surf (cairo:create-image-surface :argb32 1000 1000))
     (print-with-attributes (text :draw nil :width width) attributes
       (multiple-value-list 
-	  (get-layout-extents pango::*layout*)))))
+       (get-layout-extents pango::*layout*)))))
 
 	
