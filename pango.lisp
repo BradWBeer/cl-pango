@@ -2236,6 +2236,26 @@
 	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
 		 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))))
 
+
+(defmacro print-with-markup ((text &key (context 'cairo:*context*) (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word) (draw t)) &body body)
+  `(with-layout ()
+     (with-paragraph (:alignment ,alignment
+				 :context ,context
+				 :width ,(or width
+					     `(cairo:width cairo::*context*)) :wrap ,wrap)
+       (cairo:save)
+       (pango_layout_set_markup ,*layout* (xmls:toxml
+					   ,text) -1)
+       (progn
+	 (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+	 ,@body)
+	 
+	 (when ,draw (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*))
+	 (cairo:restore)
+	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
+		 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))))
+
+
 (defun get-size-for-text (text attributes &key width)
   (cairo:with-surface-and-context (surf (cairo:create-image-surface :argb32 1000 1000))
     (print-with-attributes (text :draw nil :width width) attributes

@@ -11,6 +11,7 @@
    #:print-text
    #:print-with-attributes
    #:get-size-for-text
+   #:get-size-for-markup
    #:with-paragraph
    #:with-pango-object
    #:with-pango-objects
