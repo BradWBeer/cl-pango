@@ -2261,5 +2261,4 @@
     (print-with-attributes (text :draw nil :width width) attributes
       (multiple-value-list 
        (get-layout-extents pango::*layout*)))))
-
 	
