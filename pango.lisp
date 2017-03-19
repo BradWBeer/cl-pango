@@ -2034,7 +2034,7 @@
   (cairo:paint context)
   (cairo:restore context))
 
-(defmacro print-raw-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_CENTER))
+(defmacro print-raw-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_LEFT))
   "Print a block of text."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
@@ -2047,7 +2047,7 @@
      (unless (cairo:has-current-point) (cairo:move-to 0 0))
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
-(defmacro print-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_CENTER))
+(defmacro print-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_LEFT))
   "Print a block of text with markup."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
