@@ -448,26 +448,26 @@
     :pointer)
 
 (cffi:defcenum PangoStyle
-  :PANGO_STYLE_NORMAL
-  :PANGO_STYLE_OBLIQUE
-  :PANGO_STYLE_ITALIC)
+  :pango-style-NORMAL
+  :pango-style-OBLIQUE
+  :pango-style-ITALIC)
 
 (cffi:defcenum PangoWeight
-  (:PANGO_WEIGHT_THIN 100)
-  (:PANGO_WEIGHT_ULTRALIGHT 200)
-  (:PANGO_WEIGHT_LIGHT 300)
-  (:PANGO_WEIGHT_BOOK 380)
-  (:PANGO_WEIGHT_NORMAL 400)
-  (:PANGO_WEIGHT_MEDIUM 500)
-  (:PANGO_WEIGHT_SEMIBOLD 600)
-  (:PANGO_WEIGHT_BOLD 700)
-  (:PANGO_WEIGHT_ULTRABOLD 800)
-  (:PANGO_WEIGHT_HEAVY 900)
-  (:PANGO_WEIGHT_ULTRAHEAVY 1000))
+  (:pango-weight-THIN 100)
+  (:pango-weight-ULTRALIGHT 200)
+  (:pango-weight-LIGHT 300)
+  (:pango-weight-BOOK 380)
+  (:pango-weight-NORMAL 400)
+  (:pango-weight-MEDIUM 500)
+  (:pango-weight-SEMIBOLD 600)
+  (:pango-weight-BOLD 700)
+  (:pango-weight-ULTRABOLD 800)
+  (:pango-weight-HEAVY 900)
+  (:pango-weight-ULTRAHEAVY 1000))
 
 (cffi:defcenum PangoVariant
-  :PANGO_VARIANT_NORMAL
-  :PANGO_VARIANT_SMALL_CAPS)
+  :pango-variant-normal
+  :pango-variant-small-caps)
 
 (cffi:defcenum PangoStretch
   :PANGO_STRETCH_ULTRA_CONDENSED
@@ -1134,9 +1134,9 @@
     :pointer)
 
 (cffi:defcenum PangoWrapMode
-  :PANGO_WRAP_WORD
-  :PANGO_WRAP_CHAR
-  :PANGO_WRAP_WORD_CHAR)
+  :WRAP-WORD
+  :WRAP-CHAR
+  :WRAP-WORD-CHAR)
 
 (cffi:defcenum PangoEllipsizeMode
   :PANGO_ELLIPSIZE_NONE
@@ -1145,9 +1145,9 @@
   :PANGO_ELLIPSIZE_END)
 
 (cffi:defcenum PangoAlignment
-  :PANGO_ALIGN_LEFT
-  :PANGO_ALIGN_CENTER
-  :PANGO_ALIGN_RIGHT)
+  :ALIGN-LEFT
+  :ALIGN-CENTER
+  :ALIGN-RIGHT)
 
 (cffi:defcstruct PangoGlyphItem
   (item :pointer)
@@ -2034,7 +2034,7 @@
   (cairo:paint context)
   (cairo:restore context))
 
-(defmacro print-raw-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_LEFT))
+(defmacro print-raw-text (text &key (width nil) (wrap :wrap-word) (alignment :ALIGN-LEFT))
   "Print a block of text."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
@@ -2047,7 +2047,7 @@
      (unless (cairo:has-current-point) (cairo:move-to 0 0))
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
-(defmacro print-text (text &key (width nil) (wrap :pango_wrap_word) (alignment :PANGO_ALIGN_LEFT))
+(defmacro print-text (text &key (width nil) (wrap :wrap-word) (alignment :ALIGN-LEFT))
   "Print a block of text with markup."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
@@ -2062,7 +2062,7 @@
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
-(defmacro with-paragraph ((&key (layout '*layout*) (context 'cairo:*context*) (alignment :PANGO_ALIGN_LEFT) width (wrap :pango_wrap_word)) &body body)
+(defmacro with-paragraph ((&key (layout '*layout*) (context 'cairo:*context*) (alignment :ALIGN-LEFT) width (wrap :wrap-word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
 	(gwrap (gensym)))
@@ -2209,7 +2209,7 @@
     (:letter-spacing . ,#'add-letter-spacing-attribute)))
 
 
-(defmacro print-with-attributes ((text &key (context 'cairo:*context*) (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word) (draw t)) attributes &body body)
+(defmacro print-with-attributes ((text &key (context 'cairo:*context*) (alignment :ALIGN-left) width (wrap :wrap-word) (draw t)) attributes &body body)
   `(with-layout ()
      (with-paragraph (:alignment ,alignment
 				 :context ,context
@@ -2237,7 +2237,7 @@
 		 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))))
 
 
-(defmacro print-with-markup ((text &key (context 'cairo:*context*) (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word) (draw t)) &body body)
+(defmacro print-with-markup ((text &key (context 'cairo:*context*) (alignment :ALIGN-left) width (wrap :wrap-word) (draw t)) &body body)
   `(with-layout ()
      (with-paragraph (:alignment ,alignment
 				 :context ,context
