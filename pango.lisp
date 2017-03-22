@@ -2061,7 +2061,7 @@
      (unless (cairo:has-current-point) (cairo:move-to 0 0))
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
-(defmacro print-text-with-attributes (text attributes &key (width nil) (wrap :wrap-word) (alignment :ALIGN-LEFT))
+(defmacro print-text-with-attributes (text attributes &key (width nil) (wrap :pango_wrap_word) (alignment :pango_ALIGN_LEFT))
   "Print a block of text with markup."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
