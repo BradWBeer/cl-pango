@@ -9,6 +9,7 @@
    #:clear-cairo-context
    #:print-raw-text
    #:print-text
+   #:print-text-with-attributes
    #:print-with-attributes
    #:get-size-for-text
    #:get-size-for-markup
