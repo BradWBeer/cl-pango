@@ -2062,6 +2062,30 @@
      (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*)))))
 
 
+(defmacro print-text-with-attributes (text attributes &key (width nil) (wrap :wrap-word) (alignment :ALIGN-LEFT))
+  "Print a block of text with markup."
+  `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
+     (cairo:save)
+     
+     (pango_layout_set_text *layout* ,text -1)
+     (with-attribute-list ()
+       (map nil 
+	    (lambda (a)
+	      (apply
+	       (cdr (assoc (car a) *alist-attributes*))
+	       (cdr a)))
+	    ,attributes)
+       
+       (pango_layout_set_attributes *layout* *attribute-list*)
+       (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
+       
+       (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
+       (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
+       (cairo:restore)
+       (unless (cairo:has-current-point) (cairo:move-to 0 0))
+       (cairo:rel-move-to 0 (nth-value 1 (get-layout-size ,*layout*))))))
+
+
 (defmacro with-paragraph ((&key (layout '*layout*) (context 'cairo:*context*) (alignment :ALIGN-LEFT) width (wrap :wrap-word)) &body body)
   "Create a paragraph of text"
   (let ((gwidth (gensym))
