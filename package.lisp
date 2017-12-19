@@ -1,5 +1,14 @@
 (in-package :cl-user)
 
+(uiop:define-package #:pango-ffi)
+(uiop:define-package #:pango-ffi.accessors)
+(uiop:define-package #:pango-ffi.functions)
+
+(uiop:define-package #:pangocairo-ffi)
+(uiop:define-package #:pangocairo-ffi.accessors)
+(uiop:define-package #:pangocairo-ffi.functions)
+
+
 (cl:defpackage #:cl-pango
   (:nicknames :pango)
   (:use #:cl)
