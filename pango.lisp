@@ -31,7 +31,7 @@
                       ((cl:lower-case-p c)
                        (helper (cl:cdr lst) 'lower (cl:cons (cl:char-upcase c) rest)))
                       ((cl:digit-char-p c)
-                       (helper (cl:cdr lst) 'digit 
+                       (helper (cl:cdr lst) 'digit
                                (cl:case last
                                  ((upper lower) (cl:list* c #\- rest))
                                  (cl:t (cl:cons c rest)))))
@@ -65,7 +65,7 @@
 
 (cffi:defcstruct GSList
   (data :pointer)
-  (next :pointer))	
+  (next :pointer))
 
 (cffi:defcstruct GList
   (data :pointer)
@@ -90,8 +90,8 @@
 
 (cffi:defcstruct PangoLayoutLine
   (layout :pointer)
-  (start_index :int)  
-  (length :int)	
+  (start_index :int)
+  (length :int)
   (runs :pointer)
   (is_paragraph_start :uint)
   (resolved_dir :uint))
@@ -1826,7 +1826,7 @@
 (defmacro with-attribute-list ((&optional (var '*attribute-list*) (layout '*layout*)) &body body)
   `(let ((,var (pango:pango_attr_list_new)))
      (unwind-protect
-	  (prog1 
+	  (prog1
 	      (progn ,@body)
 	    (pango:pango_layout_set_attributes ,layout ,var))
        (pango:pango_attr_list_unref ,var))))
@@ -1837,7 +1837,7 @@
 	(a (gensym))
 	(s (gensym))
 	(e (gensym)))
-    
+
     `(let ((,attrs ,attr-list)
 	   (,a ,attr)
 	   (,s ,start)
@@ -1862,7 +1862,7 @@
   (cffi:with-foreign-objects ((w :int)
 			      (h :int))
     (pango_layout_get_size layout w h)
-    (values 
+    (values
      (/ (cffi:mem-aref w :int) PANGO_SCALE)
      (/ (cffi:mem-aref h :int) PANGO_SCALE))))
 
@@ -1870,24 +1870,24 @@
 (defun get-layout-line-extents (line)
   (cffi:with-foreign-objects ((ink 'PangoRectangle)
 			      (logical 'PangoRectangle))
-    (pango_layout_line_get_extents line ink logical)      
+    (pango_layout_line_get_extents line ink logical)
     (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'height) PANGO_SCALE)
-	    
+
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'y) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'width) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value ink 'PangoRectangle 'height) PANGO_SCALE)
-	    
-	    
+
+
 	    )))
 
 (defun get-layout-extents (&optional (layout *layout*))
   (cffi:with-foreign-objects ((ink 'PangoRectangle)
 			      (logical 'PangoRectangle))
-    (pango_layout_get_extents layout ink logical)      
+    (pango_layout_get_extents layout ink logical)
     (values (/ (cffi:foreign-slot-value logical 'PangoRectangle 'x) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'y) PANGO_SCALE)
 	    (/ (cffi:foreign-slot-value logical 'PangoRectangle 'width) PANGO_SCALE)
@@ -1904,12 +1904,12 @@
 	 (ret (loop with itr = (pango_layout_get_lines layout)
 		 until (cffi-sys:null-pointer-p itr)
 		 collect (let ((data (cffi:foreign-slot-value itr 'GSList 'data)))
-			   (append (multiple-value-list 
+			   (append (multiple-value-list
 				    (get-layout-line-extents data))
 				   (list (cffi:foreign-slot-value data 'PangoLayoutLine 'start_index)
 					 (cffi:foreign-slot-value data 'PangoLayoutLine 'length)
 					 data)))
-		   
+
 		 do (setf itr (cffi:foreign-slot-value itr 'GSList 'next))
 		 do (incf i))))
     ret))
@@ -1918,7 +1918,7 @@
   (let ((direction (if forward 1 -1))
 	(strong (if strong 1 0))
 	(old-trailing (if trailing 1 0)))
-    
+
     (cffi:with-foreign-objects ((index :int)
 				(trailing :int))
       (pango_layout_move_cursor_visually layout strong pos old-trailing direction index trailing)
@@ -1948,10 +1948,10 @@
 		    (< index (+ start len))))
        finally (return (list x
 			     (cffi:with-foreign-object (x-pos :int)
-			       (pango_layout_line_index_to_x 
-				i 
-				index 
-				0 
+			       (pango_layout_line_index_to_x
+				i
+				index
+				0
 				x-pos)
 			       (/ (cffi:mem-aref x-pos :int) PANGO_SCALE)))))))
 
@@ -1960,7 +1960,7 @@
     (pango_layout_line_index_to_x line index trailing x)
     (cffi:mem-aref x :int)))
 
-(defun layout-line-x-to-index (line x) 
+(defun layout-line-x-to-index (line x)
   (cffi:with-foreign-objects ((index :int)
 			      (trailing :int))
     (pango_layout_line_x_to_index line x index trailing)
@@ -1992,7 +1992,7 @@
 		    (/ (cffi:foreign-slot-value weak 'PangoRectangle 'height) PANGO_SCALE))))))
 
 
-(defun list-font-families (&optional (font-map (pango_cairo_font_map_get_default))) 
+(defun list-font-families (&optional (font-map (pango_cairo_font_map_get_default)))
   (cffi:with-foreign-objects ((c :int)
 			      (l :pointer))
     (pango_font_map_list_families font-map l c)
@@ -2001,7 +2001,7 @@
 		collect (cffi:mem-aref (cffi:mem-aref l :pointer ) :pointer i))
 	(g_object_unref l)))))
 
-(defun list-font-family-names (&optional (font-map (pango_cairo_font_map_get_default))) 
+(defun list-font-family-names (&optional (font-map (pango_cairo_font_map_get_default)))
   (cffi:with-foreign-objects ((c :int)
 			      (l :pointer))
     (pango_font_map_list_families font-map l c)
@@ -2024,7 +2024,7 @@
     `(let ((,context (cairo:create-context ,surface)))
        (unwind-protect
 	    (cairo:with-context (,context)
-	      ,@body)	      
+	      ,@body)
 	 (cairo:destroy ,context)))))
 
 (defun clear-cairo-context (&optional (r 1) (g 1) (b 1) (a 1) (context cairo:*context*))
@@ -2040,7 +2040,7 @@
      (cairo:save)
 
      (pango_layout_set_text ,*layout* ,text -1)
-     
+
      (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (cairo:restore)
@@ -2054,7 +2054,7 @@
 
      (pango_layout_set_markup ,*layout* (xmls:toxml
 					 ,text) -1)
-     
+
      (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
      (cairo:restore)
@@ -2065,19 +2065,19 @@
   "Print a block of text with markup."
   `(with-paragraph (:width ,width :wrap ,wrap :alignment ,alignment)
      (cairo:save)
-     
+
      (pango_layout_set_text *layout* ,text -1)
      (with-attribute-list ()
-       (map nil 
+       (map nil
 	    (lambda (a)
 	      (apply
 	       (cdr (assoc (car a) *alist-attributes*))
 	       (cdr a)))
 	    ,attributes)
-       
+
        (pango_layout_set_attributes *layout* *attribute-list*)
        (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-       
+
        (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
        (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) ,*layout*)
        (cairo:restore)
@@ -2094,11 +2094,11 @@
 		     (slot-value ,context 'cairo::pointer)))
 	   (,gwidth (* pango_scale (or ,width (cairo:width  ,context))))
 	   (,gwrap ,wrap))
-       
+
        (when (and ,gwidth ,gwrap)
 	 (pango_layout_set_wrap ,layout ,gwrap)
 	 (pango_layout_set_width ,layout ,gwidth))
-       
+
        (pango_layout_set_alignment ,layout ,alignment)
        (unwind-protect
 	    (progn ,@body)
@@ -2240,10 +2240,10 @@
 					     `(cairo:width cairo::*context*)) :wrap ,wrap)
        (cairo:save)
        (pango:pango_layout_set_text *layout* ,text -1)
-       
+
        (prog1
 	   (with-attribute-list ()
-	     (map nil 
+	     (map nil
 		  (lambda (a)
 		    (apply
 		     (cdr (assoc (car a) *alist-attributes*))
@@ -2251,9 +2251,9 @@
 		  ,attributes)
 	     (pango:pango_layout_set_attributes *layout* *attribute-list*)
 	     (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
-	     
+
 	     ,@body)
-	 
+
 	 (when ,draw (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*))
 	 (cairo:restore)
 	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
@@ -2272,7 +2272,7 @@
        (progn
 	 (pango_cairo_update_layout (slot-value cairo:*context* 'cairo::pointer) *layout*)
 	 ,@body)
-	 
+
 	 (when ,draw (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*))
 	 (cairo:restore)
 	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
@@ -2282,6 +2282,6 @@
 (defun get-size-for-text (text attributes &key width)
   (cairo:with-surface-and-context (surf (cairo:create-image-surface :argb32 1000 1000))
     (print-with-attributes (text :draw nil :width width) attributes
-      (multiple-value-list 
+      (multiple-value-list
        (get-layout-extents pango::*layout*)))))
-	
+
