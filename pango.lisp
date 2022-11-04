@@ -2256,8 +2256,8 @@
 
 	 (when ,draw (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*))
 	 (cairo:restore)
-	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
-		 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))))
+         (unless (cairo:has-current-point) (cairo:move-to 0 0))
+	 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))))
 
 
 (defmacro print-with-markup ((text &key (context 'cairo:*context*) (alignment :PANGO_ALIGN_left) width (wrap :pango_wrap_word) (draw t)) &body body)
@@ -2275,8 +2275,8 @@
 
 	 (when ,draw (pango_cairo_show_layout (slot-value cairo:*context* 'cairo::pointer) *layout*))
 	 (cairo:restore)
-	 (unless (cairo:has-current-point) (cairo:move-to 0 0)
-		 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*)))))))
+         (unless (cairo:has-current-point) (cairo:move-to 0 0))
+	 (cairo:rel-move-to 0 (nth-value 1 (get-layout-size *layout*))))))
 
 
 (defun get-size-for-text (text attributes &key width)
